@@ -12,32 +12,37 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Install 32-bit dependencies
+      - name: Install build dependencies
         run: |
           sudo dpkg --add-architecture i386
           sudo apt-get update
-          sudo apt-get install -y libc6:i386 libstdc++6:i386 libgcc-s1:i386 lib32z1
+          sudo apt-get install -y git gcc g++ clang nasm python3 python3-pip \
+            libc6-dev-i386 lib32stdc++-12-dev lib32z1-dev gcc-multilib g++-multilib
+          pip3 install ambuild2
 
-      - name: Download AMX Mod X 1.8.2 Base Linux
+      - name: Clone and build AMX Mod X 1.8.2
         run: |
-          curl -fL -o amxmodx.tar.gz "https://www.amxmodx.org/amxxdrop/1.8.2/amxmodx-1.8.2-base-linux.tar.gz"
-          tar -xzf amxmodx.tar.gz
+          git clone --depth 1 --branch 1.8.2 https://github.com/alliedmodders/amxmodx.git /tmp/amxmodx
+          cd /tmp/amxmodx
+          mkdir build && cd build
+          python3 ../configure.py
+          ambuild
 
       - name: Compile plugin
         run: |
-          cp kz_autojump.sma addons/amxmodx/scripting/kz_autojump.sma
-          cp kz_autojump.inc addons/amxmodx/scripting/include/kz_autojump.inc
-          cd addons/amxmodx/scripting
-          ./amxxpc -iinclude kz_autojump.sma -o../../../kz_autojump.amxx
+          cp kz_autojump.sma /tmp/amxmodx/build/package/base/addons/amxmodx/scripting/kz_autojump.sma
+          cp kz_autojump.inc /tmp/amxmodx/build/package/base/addons/amxmodx/scripting/include/kz_autojump.inc
+          cd /tmp/amxmodx/build/package/base/addons/amxmodx/scripting
+          ./amxxpc -iinclude /github/workspace/kz_autojump.sma -o/github/workspace/kz_autojump.amxx
 
       - name: Verify output
         run: |
-          ls -la kz_autojump.amxx
-          file kz_autojump.amxx
+          ls -la /github/workspace/kz_autojump.amxx
+          file /github/workspace/kz_autojump.amxx
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: kz_autojump.amxx
-          path: kz_autojump.amxx
+          path: /github/workspace/kz_autojump.amxx
           retention-days: 30

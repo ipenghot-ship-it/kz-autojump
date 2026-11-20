@@ -29,7 +29,9 @@ jobs:
           cp kz_autojump.inc addons/amxmodx/scripting/include/kz_autojump.inc
           cd addons/amxmodx/scripting
           ./compile.sh kz_autojump.sma 2>&1
-          cp compiled/kz_autojump.amxx ../../../kz_autojump.amxx
+          # Find the compiled .amxx file (compile.sh may output to different locations)
+          find . -name "kz_autojump.amxx" -type f
+          cp $(find . -name "kz_autojump.amxx" -type f | head -1) ../../../kz_autojump.amxx
 
       - name: Verify output
         run: |

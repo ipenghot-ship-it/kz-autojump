@@ -26,7 +26,8 @@ jobs:
       - name: Compile plugin
         run: |
           cd addons/amxmodx/scripting
-          ./amxxpc -iinclude ../../../kz_autojump.sma -o../../../kz_autojump.amxx
+          ./compile.sh ../../../kz_autojump.sma 2>&1
+          cp compiled/kz_autojump.amxx ../../../kz_autojump.amxx
 
       - name: Verify output
         run: |

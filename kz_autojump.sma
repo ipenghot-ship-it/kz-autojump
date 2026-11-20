@@ -70,9 +70,9 @@ public client_disconnected(id);
 public Task_Think();
 public Task_DCJ_Sequence();
 public Task_CJ_Sequence();
-public Cmd_Mode(id);
-public Cmd_Status(id);
-public Cmd_Config(id);
+public Cmd_Mode(id, level, cid);
+public Cmd_Status(id, level, cid);
+public Cmd_Config(id, level, cid);
 
 // ================= 插件入口 =================
 public plugin_init() {
@@ -326,7 +326,7 @@ EndDCJ(success) {
     if (!g_bInDCJ) return;
     g_bInDCJ = false;
     remove_task(TASK_DCJ_SEQ);
-    ExecuteForward(g_iPlayer, 0); // 释放所有键
+    SetPlayerButtons(g_iPlayer, 0); // 释放所有键
     ExecuteForward(g_fwdDCJEnd, _, g_iPlayer, success);
     client_print(g_iPlayer, print_chat, "[KZ AutoJump] DCJ %s", success ? "完成" : "中断");
 }
@@ -381,12 +381,12 @@ public Task_CJ_Sequence() {
             g_iFrameCounter = 0;
         }
         case 4: { // 松开跳跃
-            ExecuteForward(g_iPlayer, IN_FORWARD);
+            SetPlayerButtons(g_iPlayer, IN_FORWARD);
             g_iCJStage = 5;
             g_iFrameCounter = 0;
         }
         case 5: { // 循环间隙
-            ExecuteForward(g_iPlayer, 0);
+            SetPlayerButtons(g_iPlayer, 0);
             if (g_iFrameCounter >= cj_cycle_gap) {
                 g_iCJDirection *= -1; // 交替方向
                 g_iCJStage = 1;
@@ -405,7 +405,7 @@ EndCJ(success) {
     if (!g_bInCJ) return;
     g_bInCJ = false;
     remove_task(TASK_CJ_SEQ);
-    ExecuteForward(g_iPlayer, 0);
+    SetPlayerButtons(g_iPlayer, 0);
     ExecuteForward(g_fwdCJEnd, _, g_iPlayer, success);
     client_print(g_iPlayer, print_chat, "[KZ AutoJump] CJ %s", success ? "完成" : "中断");
 }
@@ -436,7 +436,7 @@ public Cmd_Mode(id, level, cid) {
     
     g_iMode = mode;
     
-    new mode_str[16];
+    new mode_str[64];
     switch (mode) {
         case MODE_OFF: mode_str = "关闭";
         case MODE_DCJ: mode_str = "DCJ (按E触发)";
@@ -453,7 +453,7 @@ public Cmd_Mode(id, level, cid) {
 public Cmd_Status(id, level, cid) {
     if (!cmd_access(id, level, cid, 1)) return PLUGIN_HANDLED;
     
-    new mode_str[16];
+    new mode_str[64];
     switch (g_iMode) {
         case MODE_OFF: mode_str = "OFF";
         case MODE_DCJ: mode_str = "DCJ";

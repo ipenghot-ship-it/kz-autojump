@@ -18,9 +18,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libc6:i386 libstdc++6:i386 libgcc-s1:i386 lib32z1
 
-      - name: Download AMX Mod X Base Linux
+      - name: Download AMX Mod X 1.8.2 Base Linux
         run: |
-          curl -fL -o amxmodx.tar.gz "https://www.amxmodx.org/amxxdrop/1.10/amxmodx-1.10.0-git5488-base-linux.tar.gz"
+          curl -fL -o amxmodx.tar.gz "https://www.amxmodx.org/amxxdrop/1.8.2/amxmodx-1.8.2-base-linux.tar.gz"
           tar -xzf amxmodx.tar.gz
 
       - name: Compile plugin
@@ -28,7 +28,6 @@ jobs:
           cp kz_autojump.sma addons/amxmodx/scripting/kz_autojump.sma
           cp kz_autojump.inc addons/amxmodx/scripting/include/kz_autojump.inc
           cd addons/amxmodx/scripting
-          # Use amxxpc directly with explicit output path
           ./amxxpc -iinclude kz_autojump.sma -o../../../kz_autojump.amxx
 
       - name: Verify output

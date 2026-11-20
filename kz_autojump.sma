@@ -311,7 +311,7 @@ public Task_DCJ_Sequence() {
             g_iFrameCounter = 0;
         }
         case 14: { // 结束
-            ExecuteForward(g_iPlayer, 0);
+            SetPlayerButtons(g_iPlayer, 0);
             EndDCJ(true);
         }
     }
@@ -362,21 +362,21 @@ public Task_CJ_Sequence() {
     
     switch (g_iCJStage) {
         case 1: { // 侧向
-            ExecuteForward(g_iPlayer, IN_FORWARD | (g_iCJDirection == 1 ? IN_MOVELEFT : IN_MOVERIGHT));
+            SetPlayerButtons(g_iPlayer, IN_FORWARD | (g_iCJDirection == 1 ? IN_MOVELEFT : IN_MOVERIGHT));
             if (g_iFrameCounter >= cj_strafe) {
                 g_iCJStage = 2;
                 g_iFrameCounter = 0;
             }
         }
         case 2: { // 跳跃延迟
-            ExecuteForward(g_iPlayer, IN_FORWARD);
+            SetPlayerButtons(g_iPlayer, IN_FORWARD);
             if (g_iFrameCounter >= cj_jump_delay) {
                 g_iCJStage = 3;
                 g_iFrameCounter = 0;
             }
         }
         case 3: { // 跳跃
-            ExecuteForward(g_iPlayer, IN_FORWARD | IN_JUMP);
+            SetPlayerButtons(g_iPlayer, IN_FORWARD | IN_JUMP);
             g_iCJStage = 4;
             g_iFrameCounter = 0;
         }

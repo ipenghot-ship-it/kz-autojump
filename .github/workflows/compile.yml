@@ -25,20 +25,20 @@ jobs:
 
       - name: Compile plugin
         run: |
-          cp /github/workspace/kz_autojump.sma addons/amxmodx/scripting/kz_autojump.sma
-          cp /github/workspace/kz_autojump.inc addons/amxmodx/scripting/include/kz_autojump.inc
+          cp kz_autojump.sma addons/amxmodx/scripting/kz_autojump.sma
+          cp kz_autojump.inc addons/amxmodx/scripting/include/kz_autojump.inc
           cd addons/amxmodx/scripting
           ./compile.sh kz_autojump.sma 2>&1
-          cp compiled/kz_autojump.amxx /github/workspace/kz_autojump.amxx
+          cp compiled/kz_autojump.amxx ../../../kz_autojump.amxx
 
       - name: Verify output
         run: |
-          ls -la /github/workspace/kz_autojump.amxx
-          file /github/workspace/kz_autojump.amxx
+          ls -la kz_autojump.amxx
+          file kz_autojump.amxx
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: kz_autojump.amxx
-          path: /github/workspace/kz_autojump.amxx
+          path: kz_autojump.amxx
           retention-days: 30

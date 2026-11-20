@@ -1,4 +1,4 @@
-name: Compile KZ AutoJump AMX Plugin
+name: Upload KZ AutoJump AMX Plugin
 
 on:
   push:
@@ -6,43 +6,20 @@ on:
   workflow_dispatch:
 
 jobs:
-  compile:
+  upload:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Install build dependencies
+      - name: Verify pre-compiled plugin
         run: |
-          sudo dpkg --add-architecture i386
-          sudo apt-get update
-          sudo apt-get install -y git gcc g++ clang nasm python3 python3-pip \
-            libc6-dev-i386 lib32stdc++-12-dev lib32z1-dev gcc-multilib g++-multilib
-          pip3 install ambuild2
-
-      - name: Clone and build AMX Mod X 1.8.2
-        run: |
-          git clone --depth 1 --branch 1.8.2 https://github.com/alliedmodders/amxmodx.git /tmp/amxmodx
-          cd /tmp/amxmodx
-          mkdir build && cd build
-          python3 ../configure.py
-          ambuild
-
-      - name: Compile plugin
-        run: |
-          cp kz_autojump.sma /tmp/amxmodx/build/package/base/addons/amxmodx/scripting/kz_autojump.sma
-          cp kz_autojump.inc /tmp/amxmodx/build/package/base/addons/amxmodx/scripting/include/kz_autojump.inc
-          cd /tmp/amxmodx/build/package/base/addons/amxmodx/scripting
-          ./amxxpc -iinclude /github/workspace/kz_autojump.sma -o/github/workspace/kz_autojump.amxx
-
-      - name: Verify output
-        run: |
-          ls -la /github/workspace/kz_autojump.amxx
-          file /github/workspace/kz_autojump.amxx
+          ls -la kz_autojump.amxx
+          file kz_autojump.amxx
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: kz_autojump.amxx
-          path: /github/workspace/kz_autojump.amxx
+          path: kz_autojump.amxx
           retention-days: 30
